@@ -12,14 +12,10 @@ func main() {
     portPtr := flag.Int("port", 8080, "the port to run the listener on")
     flag.Parse()
     fmt.Println("Listener port:",*portPtr)
-    
-    // Basic structure of TCP listener curtesy of https://coderwall.com/p/wohavg/creating-a-simple-tcp-server-in-go
-    
-    CONN_PORT := strconv.Itoa(*portPtr)
-    
+
     http.HandleFunc("/", handleRequest)
     
-    log.Fatal(http.ListenAndServe(":"+CONN_PORT, nil))
+    log.Fatal(http.ListenAndServe(":"+strconv.Itoa(*portPtr), nil))
 }
 
 // Handles incoming requests.
