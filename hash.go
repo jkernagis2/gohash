@@ -46,16 +46,22 @@ func (s *Server) handleRequest(w http.ResponseWriter, r *http.Request) {
     // Remember when we got the request so we can respond after time == SLEEP_SECONDS
     start := time.Now()
     if r.Method != "POST" {
+        s.logger.Printf("Non post method attempted")
         w.WriteHeader(http.StatusMethodNotAllowed)
         fmt.Fprintf(w, "You must post to this service")
     } else {
         if(r.FormValue("graceful shutdown") == "true"){
+            s.logger.Printf("graceful shutdown request received")
+            
+            time.Sleep(time.Duration(SLEEP_SECONDS) * time.Second)
+            
             w.WriteHeader(http.StatusOK)
             fmt.Fprintf(w, "Server will shut down momentarily")
             
             s.stop <- syscall.SIGINT
-            
         }else if(r.FormValue("password") != ""){
+            s.logger.Printf("Hash request received")
+            
             // Do hashing and encoding right away so we can respond in as close to SLEEP_SECONDS as possible
             password := strings.TrimSpace(r.FormValue("password"))
             retVal := hashAndEncode(password)
@@ -69,6 +75,10 @@ func (s *Server) handleRequest(w http.ResponseWriter, r *http.Request) {
             // Return
             fmt.Fprintf(w, "%s", retVal)
         }else{
+            s.logger.Printf("Invalid request received")
+            
+            time.Sleep(time.Duration(SLEEP_SECONDS) * time.Second)
+            
             w.WriteHeader(http.StatusBadRequest)
             fmt.Fprintf(w, "Invalid request")
         }
