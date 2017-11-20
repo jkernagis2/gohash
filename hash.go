@@ -47,6 +47,9 @@ func (s *Server) handleRequest(w http.ResponseWriter, r *http.Request) {
     start := time.Now()
     if r.Method != "POST" {
         s.logger.Printf("Non post method attempted")
+        
+        time.Sleep(time.Duration(SLEEP_SECONDS) * time.Second)
+        
         w.WriteHeader(http.StatusMethodNotAllowed)
         fmt.Fprintf(w, "You must post to this service")
     } else {
