@@ -20,25 +20,25 @@ const(
 )
 
 type Server struct {
-	logger *log.Logger
-	mux    *http.ServeMux
+    logger *log.Logger
+    mux    *http.ServeMux
     stop   chan os.Signal
 }
 
 func NewServer(options ...func(*Server)) *Server {
-	s := &Server{
-		logger: log.New(os.Stdout, "", 0),
-		mux:    http.NewServeMux(),
+    s := &Server{
+        logger: log.New(os.Stdout, "", 0),
+        mux:    http.NewServeMux(),
         stop:   make(chan os.Signal),
-	}
+    }
 
-	for _, f := range options {
-		f(s)
-	}
+    for _, f := range options {
+        f(s)
+    }
 
-	s.mux.HandleFunc("/", s.handleRequest)
+    s.mux.HandleFunc("/", s.handleRequest)
 
-	return s
+    return s
 }
 
 // Handles incoming requests.
@@ -86,7 +86,7 @@ func (s *Server) handleRequest(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	s.mux.ServeHTTP(w, r)
+    s.mux.ServeHTTP(w, r)
 }
 
 func main() {
@@ -99,7 +99,7 @@ func main() {
     addr := ":"+strconv.Itoa(*portPtr)
     
     stop := make(chan os.Signal)
-	signal.Notify(stop, syscall.SIGINT)
+    signal.Notify(stop, syscall.SIGINT)
     
     s := NewServer(func(s *Server) {
                     s.logger = logger
@@ -119,14 +119,14 @@ func main() {
     select {
         case signal := <-stop:
             logger.Printf("Got signal:%v\n", signal)
-	}
+    }
     
     logger.Printf("Stopping listener\n")
     // Start graceful shutdown
     ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
-	h.Shutdown(ctx)
-	logger.Printf("Waiting on server\n")
-	wg.Wait()
+    h.Shutdown(ctx)
+    logger.Printf("Waiting on server\n")
+    wg.Wait()
 }
 
 // Hash and encode the input
